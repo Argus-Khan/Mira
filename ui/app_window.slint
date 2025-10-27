@@ -1,6 +1,6 @@
 // A HorizontalLayout is used to arrange children side-by-side.
 
-import { Button } from "std-widgets.slint";
+import { Button, ListView, CheckBox, HorizontalBox, LineEdit, StandardTableView } from "std-widgets.slint";
 export component addWindow inherits Window {
     title: "Mira Downloader";
     default-font-family: @tr("roboto");
@@ -15,18 +15,21 @@ HorizontalLayout {
         width: 25%;
         background: #1f2937; // Blue background
 
-
-        HorizontalLayout {
-        width: 100%;
-        height: 100%;
         VerticalLayout {
-            padding: 15px;
             horizontal-stretch: 1;
             // Text label for this column
 
-            app-brand := Rectangle {
+            app-brand := HorizontalBox {
+                alignment: center;
                 height: 10%;
+
                 width: 100%;
+            Image {
+    source: @image-url("./assets/mira_logo.png");
+    image-fit: contain;
+}
+
+
             Text {
                 text: "Mira Downloader";
                 color: #a684ff;
@@ -42,6 +45,10 @@ HorizontalLayout {
             border-width: 1px;
             }
 
+            VerticalLayout {
+                padding: 10px;
+                vertical-stretch: 1;
+
             download-states :=VerticalLayout {
                 height: 20%;
                 padding-top: 20px;
@@ -51,11 +58,17 @@ HorizontalLayout {
                 Button {
                     width: 100%;
                     text: "Active";
+                    icon: @image-url("./assets/folder-download-outline.svg");
+                    icon-size: 24px;
+                    colorize-icon: true;
                 }
 
                  Button {
                     width: 100%;
                     text: "Completed";
+                    icon: @image-url("./assets/checkbox-marked-circle-outline.svg");
+                    icon-size: 24px;
+                    colorize-icon: true;
                 }
             }
 
@@ -65,42 +78,168 @@ HorizontalLayout {
             border-width: 1px;
             }
 
+            ListView {
+                for data in [
+                    {category: "document", icon: @image-url("./assets/file-document-outline.svg")},
+                    {category: "image", icon: @image-url("./assets/image-outline.svg")},
+                    {category: "video", icon: @image-url("./assets/movie-open-outline.svg")},
+                    {category: "audio", icon: @image-url("./assets/music.svg")},
+                    {category: "archive", icon: @image-url("./assets/zip-box-outline.svg")},
+                    {category: "application", icon: @image-url("./assets/application-cog-outline.svg")}
+                ]: HorizontalBox {
+                    height: 40px;
+                    padding-left: 14px;
+                    CheckBox {}
+                    Image {
+                        source: data.icon;
+                        width: 24px;
+                        height: 24px;
+                        colorize: #C7C7C7;
+                    }
+                    Text {
+                        text: data.category;
+                        color: #C7C7C7;
+                        font-size: 14px;
+                        vertical-alignment: center;
+                    }
+            }}
 
         }
+        }
 
-        divider := Rectangle {
+    }
+
+    main-pane := Rectangle {
+        horizontal-stretch: 1;
+        background: #1f2937; // Green background
+
+        HorizontalLayout {
+
+             divider := Rectangle {
             width: 2px;
             height: 100%;
             border-color: #364153;
             border-width: 2px;
         }
-    }}
-
-    // --- Column 2 (70% Width) ---
-    main-pane := Rectangle {
-        // Setting the width to 70% of the parent layout's available space.
-        width: 75%;
-        background: #1f2937; // Green background
 
         VerticalLayout {
-            padding: 15px;
-            // Text label for this column
-            Text {
-                text: "Column 2 (70%)";
-                color: white;
-                font-size: 18px;
-                horizontal-alignment: center;
+            horizontal-stretch: 1;
+            width: 100%;
+
+            action-bar := HorizontalLayout {
+                height: 10%;
+                horizontal-stretch: 1;
+                padding: 8px;
+                spacing: 7px;
+
+                Button {
+                    icon: @image-url("./assets/plus.svg");
+                    icon-size: 20px;
+                    colorize-icon: true;
+                    width: 50px;
+                }
+
+                Button {
+                    icon: @image-url("./assets/trash-can-outline.svg");
+                    icon-size: 20px;
+                    colorize-icon: true;
+                    width: 50px;
+                }
+
+                divider2 := Rectangle {
+                    width: 1px;
+                    height: 70%;
+                    border-color: #364153;
+                    border-width: 2px; 
+                }
+
+                  Button {
+                    icon: @image-url("./assets/play.svg");
+                    icon-size: 20px;
+                    colorize-icon: true;
+                    width: 50px;
+                }
+
+                  Button {
+                    icon: @image-url("./assets/replay.svg");
+                    icon-size: 20px;
+                    colorize-icon: true;
+                    width: 50px;
+                }
+
+                  Button {
+                    icon: @image-url("./assets/play-pause.svg");
+                    icon-size: 20px;
+                    colorize-icon: true;
+                    width: 50px;
+                }
+                  Button {
+                    icon: @image-url("./assets/trash-can-outline.svg");
+                    icon-size: 20px;
+                    colorize-icon: true;
+                    width: 50px;
+                }
+
+                seacrh-spacer := Rectangle {
+                    horizontal-stretch: 1;
+                }
+
+                LineEdit {
+                    placeholder-text: "Search downloads...";
+                    width: 150px;
+                }
+
+                Button {
+                    icon: @image-url("./assets/cog-outline.svg");
+                    icon-size: 20px;
+                    colorize-icon: true;
+                    width: 50px;
+                }
             }
-            // Add a flexible space to center the text vertically
-            Rectangle { vertical-stretch: 1; }
-            Text {
-                text: "Main Content / Detail View Area";
-                color: #ecf0f1;
-                horizontal-alignment: center;
-            }
-            Rectangle { vertical-stretch: 1; }
+
+        spacer3 := Rectangle {
+            height: 1px;
+            border-color: #364153;
+            border-width: 1px;
         }
-    }
+
+        downloads-table :=
+            VerticalLayout {
+                height: 80%;
+                padding: 14px;
+                horizontal-stretch: 1;
+                StandardTableView {
+                            columns: [
+            { title: "STATUS", width:90px },
+            { title: "NAME", width:200px },
+            { title: "DATE", width:70px },
+            { title: "SIZE", width:70px },
+            { title: "SPEED", width:80px },
+            { title: "PROGRESS", width:120px },
+            { title: "ACTIONS", width:100px },
+        ];
+
+            rows: [[{ text: "Item 1" }, { text: "Item 2" }]];
+
+                }
+             }
+        }
+
+        spacer4 := Rectangle {
+            height: 1px;
+            border-color: #364153;
+            border-width: 1px;
+        }
+
+        footer-bar := HorizontalLayout {
+            height: 7%;
+            padding: 15px;
+            spacing: 10px;
+
+
+            }}
+
+        }
 }
 
 }
